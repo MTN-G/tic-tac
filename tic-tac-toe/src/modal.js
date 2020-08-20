@@ -8,7 +8,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import axios from 'axios';
 
-export default function MyModal() {
+export default function MyModal (props) {
   const [open, setOpen] = React.useState(false);
   const [winnerName, setName] = React.useState('')
 
@@ -17,16 +17,23 @@ export default function MyModal() {
   };
 
   const handleClose = () => {
+    props.reset();
     setOpen(false);
   };
 
   const addToList = () => {
     let date = new Date;
-    let fullDate = (`${date.getDate()}/${date.getMonth()}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`);
-    let newObj = {name: winnerName, date: fullDate};
+    let fullDate = (`${date.getDate()}/${date.getUTCMonth()}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`);
+    let newObj = {id: 0 , name: winnerName, date: fullDate};
     axios.post('/api/v1/records', newObj);
+    axios.get('/api/v1/records')
+    .then(res=>{
+      props.setClone(res.data)
+     })
     setOpen(false);
+    props.reset();
   }
+
 
 
   return (
@@ -54,7 +61,7 @@ export default function MyModal() {
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={addToList} color="primary">
+          <Button onClick={addToList}  color="primary">
             Subscribe
           </Button>
         </DialogActions>
