@@ -24,7 +24,7 @@ export default function MyModal (props) {
   const addToList = () => {
     let date = new Date;
     let fullDate = (`${date.getDate()}/${date.getUTCMonth()}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`);
-    let newObj = {id: 0 , name: winnerName, date: fullDate};
+    let newObj = {id: 0 , name: winnerName, date: fullDate, time: props.timer};
     axios.post('/api/v1/records', newObj);
     axios.get('/api/v1/records')
     .then(res=>{

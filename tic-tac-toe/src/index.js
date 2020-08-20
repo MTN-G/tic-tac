@@ -5,8 +5,10 @@ import Board from './board';
 import MyModal from './modal';
 import Leaders from './leaders';
 import axios from 'axios';
+import Timer from './timer';
 
   function Game () {
+  // let the fun begin     
       const [Main, setMain] = useState({
         history: [{
           squares: Array(9).fill(null),
@@ -14,7 +16,18 @@ import axios from 'axios';
         stepNumber: 0,
         xIsNext: true,
         })
-
+      
+      // winner list declerations
+      const [winnerList, setWinnerList] = useState([])
+      const [clone, setClone] = useState([])
+      const [winnerState, setWinnerState] = useState(false)
+      // timer declerations
+      const [timer, setTimer] = useState(0);
+      const [countTime, setTimeCount] = useState(true);
+      
+      
+      
+      //reset game
       const reset = () => {
         setMain({
           history: [{
@@ -23,20 +36,23 @@ import axios from 'axios';
           stepNumber: 0,
           xIsNext: true,
         })
+        setWinnerState(false)
+        setTimer(0)
+        setTimeCount(true)
         
       }
 
-      const [winnerList, setWinnerList] = useState([])
-      const [clone, setClone] = useState([])
-
+      //get winner list
       useEffect(()=>{
         axios.get('/api/v1/records')
         .then(res=>{
           setWinnerList(res.data)
         })
-      }, [clone])
+      }, [clone])       
+      
 
-  
+
+      // other shit 
       function handleClick(i) {
         const historyBook = Main.history.slice(0, Main.stepNumber + 1);
         const current = historyBook[historyBook.length - 1];
@@ -51,8 +67,8 @@ import axios from 'axios';
           }]),
           stepNumber: historyBook.length,
           xIsNext: !Main.xIsNext,
-        });
-      }
+         });
+       }
 
         function jumpTo(step) {
             setMain({
@@ -72,6 +88,7 @@ import axios from 'axios';
           status = 'Winner: ' + winner;
         } else {
           status = 'Next player: ' + (Main.xIsNext ? 'X' : 'O');
+
         }
 
         const moves = history.map((step, move)=> {
@@ -81,11 +98,21 @@ import axios from 'axios';
                 <li key={move}>
                     <button onClick={()=> jumpTo(move)}>{desc}</button>
                 </li>
-            )})
+        )})
 
+        //control timer
+        useEffect(() => {
+              if (winner) {
+                setWinnerState(true)
+              };
+        }, [winner])
+
+        useEffect(()=> {
+          if (winnerState) {
+          setTimeCount(false);
+          }
+        }, [winnerState])
         
-
-
          
       return (
         <div className="game">
@@ -99,8 +126,9 @@ import axios from 'axios';
             <div>{status}</div>
             <ol>{moves}</ol>
           </div>
-          <div>{winner && <MyModal setClone={setClone}  reset={reset}/>}</div>
-          <Leaders winnerList = {winnerList}/>
+          <div>{winner && <MyModal setClone={setClone}  reset={reset} timer={timer}/>}</div>
+          <Leaders winnerList = {winnerList} winnerState ={winnerState}/> 
+          <Timer countTime={countTime} timer={timer} setTimer={setTimer}/>
         </div>
       );
     }

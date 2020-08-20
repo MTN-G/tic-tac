@@ -7,7 +7,7 @@ export default function Leaders (props) {
        <h3>Winner List:</h3>
        <ul>{
        props.winnerList.map(x=>{
-       return <li>Name: {x.name} , date: {x.date}</li>
+       return <li>Name: {x.name} , date: {x.date} , game duration: {x.time}</li>
        })}</ul></>)
   }
 
