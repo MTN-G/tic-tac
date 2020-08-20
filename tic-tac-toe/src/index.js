@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import MyModal from './modal'
+import Leaders from './leaders'
 
 function Square(props) {
       return (
@@ -54,7 +55,7 @@ function Square(props) {
         stepNumber: 0,
         xIsNext: true,
         })
-    
+
   
     function handleClick(i) {
       const historyBook = Main.history.slice(0, Main.stepNumber + 1);
@@ -117,6 +118,7 @@ function Square(props) {
             <ol>{moves}</ol>
           </div>
           <div>{winner && <MyModal/>}</div>
+          <Leaders/>
         </div>
       );
     }

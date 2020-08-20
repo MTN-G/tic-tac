@@ -6,9 +6,11 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import axios from 'axios';
 
 export default function MyModal() {
   const [open, setOpen] = React.useState(false);
+  const [winnerName, setName] = React.useState('')
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -18,8 +20,17 @@ export default function MyModal() {
     setOpen(false);
   };
 
+  const addToList = () => {
+    let date = new Date;
+    let fullDate = (`${date.getDate()}/${date.getMonth()}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`);
+    let newObj = {name: winnerName, date: fullDate};
+    axios.post('/api/v1/records', newObj);
+    setOpen(false);
+  }
+
+
   return (
-    <div>
+    <div className="modal">
       <Button variant="outlined" color="primary" onClick={handleClickOpen}>
         JOIN TO WINNER LIST
       </Button>
@@ -36,13 +47,14 @@ export default function MyModal() {
             label="Your Name"
             type="text"
             fullWidth
+            onChange={(e)=>setName(e.target.value)}
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={addToList} color="primary">
             Subscribe
           </Button>
         </DialogActions>
