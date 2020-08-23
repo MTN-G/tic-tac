@@ -122,6 +122,7 @@ import Timer from './timer';
               onClick={(i) => handleClick(i)}
             />
           </div>
+          <button onClick={reset} className="reset">reset</button>
           <div className="game-info">
             <div>{status}</div>
             <ol>{moves}</ol>
